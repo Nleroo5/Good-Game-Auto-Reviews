@@ -17,52 +17,52 @@
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #2d3748 50%, #4a5568 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
             color: #ffffff;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
         }
 
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 25px;
             position: relative;
         }
 
         .header::before {
             content: '';
             position: absolute;
-            top: -20px;
+            top: -15px;
             left: 50%;
             transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
+            width: 80px;
+            height: 3px;
             background: linear-gradient(90deg, #00d4ff 0%, #5b73ff 100%);
             border-radius: 2px;
         }
 
         h1 {
-            font-size: 2.8rem;
+            font-size: 2.2rem;
             font-weight: 700;
             background: linear-gradient(135deg, #00d4ff 0%, #5b73ff 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             letter-spacing: -0.02em;
         }
 
         .subtitle {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #a0aab5;
             font-weight: 400;
         }
@@ -110,16 +110,16 @@
 
         .template-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
         }
 
         .template-card {
             background: rgba(255, 255, 255, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 10px;
+            padding: 15px;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
@@ -156,25 +156,25 @@
         .template-title {
             font-weight: 600;
             color: #ffffff;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
+            margin-bottom: 6px;
+            font-size: 1rem;
         }
 
         .template-desc {
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: #e2e8f0;
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         .editing-label {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-            padding: 12px 16px;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 10px 14px;
             background: rgba(0, 212, 255, 0.1);
             border: 1px solid rgba(0, 212, 255, 0.2);
-            border-radius: 8px;
+            border-radius: 6px;
         }
 
         .editing-indicator {
@@ -192,17 +192,17 @@
 
         .message-editor {
             width: 100%;
-            min-height: 140px;
-            padding: 20px;
+            min-height: 100px;
+            padding: 15px;
             background: rgba(0, 0, 0, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
+            border-radius: 10px;
             font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            line-height: 1.6;
+            font-size: 0.95rem;
+            line-height: 1.5;
             color: #ffffff;
             resize: vertical;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             transition: all 0.3s ease;
         }
 
@@ -218,14 +218,14 @@
 
         input[type="tel"], input[type="url"] {
             width: 100%;
-            padding: 16px 20px;
+            padding: 12px 16px;
             background: rgba(0, 0, 0, 0.2);
             border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
+            border-radius: 10px;
             font-family: 'Inter', sans-serif;
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #ffffff;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             transition: all 0.3s ease;
         }
 
@@ -375,24 +375,24 @@
         .counter-section {
             background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
             border: 1px solid rgba(16, 185, 129, 0.2);
-            border-radius: 16px;
-            padding: 24px;
+            border-radius: 12px;
+            padding: 20px;
             text-align: center;
         }
 
         .counter-value {
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 700;
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             line-height: 1;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .counter-label {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #e2e8f0;
             font-weight: 500;
         }
