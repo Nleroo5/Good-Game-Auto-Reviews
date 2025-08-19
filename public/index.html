@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Good Game - SMS Review System</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,251 +14,521 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d3748 50%, #4a5568 100%);
+            min-height: 100vh;
             padding: 20px;
+            color: #ffffff;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 900px;
             margin: 0 auto;
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #00d4ff 0%, #5b73ff 100%);
+            border-radius: 2px;
         }
 
         h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 1.8rem;
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff 0%, #5b73ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #a0aab5;
+            font-weight: 400;
         }
 
         .section {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 8px;
+            margin-bottom: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00d4ff 0%, #5b73ff 100%);
         }
 
         .section h2 {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            color: #555;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        input[type="tel"], input[type="url"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #00d4ff 0%, #5b73ff 100%);
             border-radius: 6px;
-            font-size: 1rem;
-            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
         }
 
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #007bff;
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .template-card {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .template-card:hover::before {
+            left: 100%;
+        }
+
+        .template-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.1);
+        }
+
+        .template-card.active {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15) 0%, rgba(91, 115, 255, 0.15) 100%);
+            border-color: #00d4ff;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .template-title {
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .template-desc {
+            font-size: 1rem;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+
+        .editing-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+        }
+
+        .editing-indicator {
+            width: 8px;
+            height: 8px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         .message-editor {
             width: 100%;
-            min-height: 120px;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-family: Arial, sans-serif;
+            min-height: 140px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
             font-size: 1rem;
-            line-height: 1.4;
+            line-height: 1.6;
+            color: #ffffff;
             resize: vertical;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
         }
 
-        .save-btn {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 1rem;
-            cursor: pointer;
-            margin-right: 10px;
+        .message-editor:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
         }
 
-        .save-btn:hover {
-            background: #0056b3;
+        .message-editor::placeholder {
+            color: #6b7280;
         }
 
-        .reset-btn {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 1rem;
-            cursor: pointer;
-        }
-
-        .reset-btn:hover {
-            background: #545b62;
-        }
-
-        .send-btn {
+        input[type="tel"], input[type="url"] {
             width: 100%;
-            padding: 15px;
-            background: #28a745;
-            color: white;
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: #ffffff;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        input::placeholder {
+            color: #6b7280;
+        }
+
+        .btn {
+            padding: 14px 28px;
             border: none;
-            border-radius: 6px;
-            font-size: 1.1rem;
-            font-weight: bold;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .send-btn:hover {
-            background: #218838;
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff 0%, #5b73ff 100%);
+            color: #ffffff;
+            margin-right: 12px;
         }
 
-        .send-btn:disabled {
-            background: #6c757d;
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .btn-send {
+            width: 100%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            padding: 18px;
+            font-size: 1.1rem;
+        }
+
+        .btn-send:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-send:disabled {
+            background: rgba(107, 114, 128, 0.5);
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
-        .message-box {
-            background: #e9ecef;
-            padding: 15px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            margin-bottom: 15px;
+        .message-preview {
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ffffff;
             white-space: pre-wrap;
+            position: relative;
+        }
+
+        .preview-label {
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            color: #00d4ff;
+            border-radius: 4px;
+            font-weight: 500;
         }
 
         .status {
-            text-align: center;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            font-weight: bold;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .status.success {
-            background: #d4edda;
-            color: #155724;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
         }
 
         .status.error {
-            background: #f8d7da;
-            color: #721c24;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
         }
 
         .status.sending {
-            background: #fff3cd;
-            color: #856404;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #f59e0b;
         }
 
         .bulk-area {
             width: 100%;
-            height: 100px;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-family: monospace;
+            height: 120px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: #ffffff;
             resize: vertical;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
         }
 
         .bulk-area:focus {
             outline: none;
-            border-color: #007bff;
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
         }
 
-        .counter {
+        .bulk-area::placeholder {
+            color: #6b7280;
+        }
+
+        .counter-section {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 16px;
+            padding: 24px;
             text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #28a745;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        }
+
+        .counter-value {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .counter-label {
+            font-size: 1.2rem;
+            color: #e2e8f0;
+            font-weight: 500;
         }
 
         .char-counter {
             text-align: right;
-            font-size: 0.9rem;
-            color: #666;
-            margin-top: 5px;
+            font-size: 1rem;
+            color: #e2e8f0;
+            margin-top: 8px;
+            font-weight: 500;
         }
 
         .char-counter.warning {
-            color: #dc3545;
+            color: #ef4444;
         }
 
-        .template-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
+        .input-group {
+            position: relative;
+            margin-bottom: 16px;
         }
 
-        .template-btn {
-            background: #e9ecef;
-            color: #333;
-            border: 1px solid #ced4da;
-            padding: 8px 15px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            cursor: pointer;
+        .input-label {
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            color: #00d4ff;
+            border-radius: 4px;
+            font-weight: 500;
         }
 
-        .template-btn:hover {
-            background: #dee2e6;
-        }
-
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .container {
                 margin: 10px;
-                padding: 20px;
+                padding: 24px;
             }
 
-            .template-buttons {
-                flex-direction: column;
+            h1 {
+                font-size: 2.2rem;
             }
+
+            .template-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-primary {
+                margin-right: 0;
+                margin-bottom: 12px;
+                width: 100%;
+            }
+
+            .counter-value {
+                font-size: 2.4rem;
+            }
+        }
+
+        .glow-effect {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(0, 212, 255, 0.2); }
+            to { box-shadow: 0 0 30px rgba(0, 212, 255, 0.4); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📱 SMS Review Requests</h1>
+        <div class="header">
+            <h1>SMS Review System</h1>
+            <p class="subtitle">Advanced messaging platform for customer engagement</p>
+        </div>
 
-        <!-- Message Customization -->
+        <!-- Template Management -->
         <div class="section">
-            <h2>Customize Your Message</h2>
+            <h2>
+                <div class="section-icon">📝</div>
+                Message Templates
+            </h2>
             
-            <div class="template-buttons">
-                <button class="template-btn" onclick="loadTemplate('default')">Default</button>
-                <button class="template-btn" onclick="loadTemplate('friendly')">Friendly</button>
-                <button class="template-btn" onclick="loadTemplate('professional')">Professional</button>
-                <button class="template-btn" onclick="loadTemplate('short')">Short</button>
+            <div class="template-grid">
+                <div class="template-card" onclick="loadTemplate('default')" id="card-default">
+                    <div class="template-title">Default</div>
+                    <div class="template-desc">Standard professional review request</div>
+                </div>
+                <div class="template-card" onclick="loadTemplate('friendly')" id="card-friendly">
+                    <div class="template-title">Friendly</div>
+                    <div class="template-desc">Warm and personal approach</div>
+                </div>
+                <div class="template-card" onclick="loadTemplate('professional')" id="card-professional">
+                    <div class="template-title">Professional</div>
+                    <div class="template-desc">Formal business communication</div>
+                </div>
+                <div class="template-card" onclick="loadTemplate('short')" id="card-short">
+                    <div class="template-title">Short</div>
+                    <div class="template-desc">Concise and direct message</div>
+                </div>
             </div>
 
-            <textarea class="message-editor" id="messageEditor" placeholder="Enter your custom message here. Use {GOOGLE_LINK} where you want the review link to appear."></textarea>
+            <div class="editing-label">
+                <div class="editing-indicator"></div>
+                <span>Editing: <strong id="currentTemplate">Default</strong> Template</span>
+            </div>
+
+            <textarea class="message-editor" id="messageEditor" placeholder="Craft your message template here. Use {GOOGLE_LINK} as a placeholder for your review link."></textarea>
             
-            <div class="char-counter" id="charCounter">0 characters (SMS limit: 160)</div>
+            <div class="char-counter" id="charCounter">0 characters (SMS optimal: under 160)</div>
 
-            <input type="url" id="googleLinkInput" placeholder="Your Google Review Link" />
+            <button class="btn btn-primary" onclick="saveCurrentTemplate()">Save Template</button>
+        </div>
 
-            <button class="save-btn" onclick="saveMessage()">Save Message</button>
-            <button class="reset-btn" onclick="resetToDefault()">Reset to Default</button>
+        <!-- Google Link Setup -->
+        <div class="section">
+            <h2>
+                <div class="section-icon">🔗</div>
+                Review Link Configuration
+            </h2>
+            <div class="input-group">
+                <div class="input-label">Google Review URL</div>
+                <input type="url" id="googleLinkInput" placeholder="https://g.page/r/YOUR_BUSINESS_ID/review" />
+            </div>
+            <button class="btn btn-primary" onclick="saveGoogleLink()">Save Configuration</button>
         </div>
 
         <!-- Message Preview -->
         <div class="section">
-            <h2>Message Preview</h2>
-            <div class="message-box" id="messagePreview">Hi! Thanks for choosing Good Game Baseball! If you had a great experience with us today, we'd love if you could leave us a quick Google review. It really helps other families find us! 🙏</div>
+            <h2>
+                <div class="section-icon">👁️</div>
+                Live Preview
+            </h2>
+            <div class="message-preview" id="messagePreview">
+                <div class="preview-label">PREVIEW</div>
+                Your message preview will appear here...
+            </div>
         </div>
 
         <!-- Status -->
@@ -264,47 +536,97 @@
 
         <!-- Single Send -->
         <div class="section">
-            <h2>Send to One Number</h2>
-            <input type="tel" id="singlePhone" placeholder="Phone number (+1234567890)" />
-            <button class="send-btn" onclick="sendSingle()">Send Text</button>
+            <h2>
+                <div class="section-icon">📱</div>
+                Single Message
+            </h2>
+            <div class="input-group">
+                <div class="input-label">Phone Number</div>
+                <input type="tel" id="singlePhone" placeholder="+1 (555) 123-4567" />
+            </div>
+            <button class="btn btn-send" onclick="sendSingle()">Send Message</button>
         </div>
 
         <!-- Bulk Send -->
         <div class="section">
-            <h2>Send to Multiple Numbers</h2>
-            <textarea class="bulk-area" id="bulkPhones" placeholder="Enter phone numbers, one per line:
-+1234567890
-+1987654321
-+1555123456"></textarea>
-            <button class="send-btn" onclick="sendBulk()">Send to All</button>
+            <h2>
+                <div class="section-icon">📋</div>
+                Bulk Messaging
+            </h2>
+            <textarea class="bulk-area" id="bulkPhones" placeholder="Enter phone numbers (one per line):
++1 (555) 123-4567
++1 (555) 234-5678
++1 (555) 345-6789"></textarea>
+            <button class="btn btn-send" onclick="sendBulk()">Send to All Recipients</button>
         </div>
 
-        <!-- Counter -->
-        <div class="counter">
-            Texts Sent Today: <span id="todayCount">0</span>
+        <!-- Analytics -->
+        <div class="section">
+            <div class="counter-section">
+                <div class="counter-value" id="todayCount">0</div>
+                <div class="counter-label">Messages Sent Today</div>
+            </div>
         </div>
     </div>
 
     <script>
         let todayCount = parseInt(localStorage.getItem('sms_count') || '0');
-        let customMessage = '';
+        let currentTemplate = 'default';
         let googleLink = '';
 
-        // Message templates
-        const templates = {
+        // Default message templates
+        const defaultTemplates = {
             default: "Hi! Thanks for choosing Good Game Baseball! If you had a great experience with us today, we'd love if you could leave us a quick Google review. It really helps other families find us! 🙏 {GOOGLE_LINK}",
             friendly: "Hey there! Hope you loved your session at Good Game Baseball today! 😊 If you're happy with our coaching, would you mind leaving us a quick Google review? It would mean the world to us! {GOOGLE_LINK}",
             professional: "Thank you for choosing Good Game Baseball. If you were satisfied with our training services today, we would greatly appreciate a Google review. {GOOGLE_LINK}",
             short: "Thanks for training with Good Game Baseball! Quick Google review? {GOOGLE_LINK} 🙏"
         };
 
+        // Load custom templates from storage or use defaults
+        let templates = {};
+
         document.getElementById('todayCount').textContent = todayCount;
 
+        function loadTemplates() {
+            const savedTemplates = localStorage.getItem('custom_templates');
+            if (savedTemplates) {
+                templates = JSON.parse(savedTemplates);
+            } else {
+                templates = { ...defaultTemplates };
+                saveTemplates();
+            }
+        }
+
+        function saveTemplates() {
+            localStorage.setItem('custom_templates', JSON.stringify(templates));
+        }
+
         function loadTemplate(templateName) {
-            const template = templates[templateName];
-            document.getElementById('messageEditor').value = template;
+            currentTemplate = templateName;
+            document.getElementById('messageEditor').value = templates[templateName] || '';
+            document.getElementById('currentTemplate').textContent = templateName.charAt(0).toUpperCase() + templateName.slice(1);
+            
+            // Update card states
+            document.querySelectorAll('.template-card').forEach(card => card.classList.remove('active'));
+            document.getElementById(`card-${templateName}`).classList.add('active');
+            
             updateCharCounter();
             updatePreview();
+        }
+
+        function saveCurrentTemplate() {
+            const message = document.getElementById('messageEditor').value;
+            templates[currentTemplate] = message;
+            saveTemplates();
+            updatePreview();
+            showStatus(`✅ ${currentTemplate.charAt(0).toUpperCase() + currentTemplate.slice(1)} template saved successfully!`, 'success');
+        }
+
+        function saveGoogleLink() {
+            googleLink = document.getElementById('googleLinkInput').value;
+            localStorage.setItem('google_link', googleLink);
+            updatePreview();
+            showStatus('✅ Review link configuration saved!', 'success');
         }
 
         function updateCharCounter() {
@@ -312,67 +634,43 @@
             const counter = document.getElementById('charCounter');
             const length = editor.value.length;
             
-            counter.textContent = `${length} characters (SMS limit: 160)`;
+            counter.textContent = `${length} characters (SMS optimal: under 160)`;
             counter.classList.toggle('warning', length > 160);
         }
 
         function updatePreview() {
-            const message = document.getElementById('messageEditor').value;
-            const link = document.getElementById('googleLinkInput').value || '[Your Google Review Link]';
+            const message = templates[currentTemplate] || '';
+            const link = googleLink || '[Your Google Review Link]';
             const preview = message.replace('{GOOGLE_LINK}', link);
             document.getElementById('messagePreview').textContent = preview;
         }
 
-        function saveMessage() {
-            customMessage = document.getElementById('messageEditor').value;
-            googleLink = document.getElementById('googleLinkInput').value;
-            
-            localStorage.setItem('custom_message', customMessage);
-            localStorage.setItem('google_link', googleLink);
-            
-            updatePreview();
-            showStatus('✅ Message saved successfully!', 'success');
-        }
-
-        function resetToDefault() {
-            loadTemplate('default');
-            saveMessage();
-        }
-
         function loadSavedData() {
-            const savedMessage = localStorage.getItem('custom_message');
+            loadTemplates();
+            
             const savedLink = localStorage.getItem('google_link');
-            
-            if (savedMessage) {
-                document.getElementById('messageEditor').value = savedMessage;
-                customMessage = savedMessage;
-            } else {
-                loadTemplate('default');
-            }
-            
             if (savedLink) {
                 document.getElementById('googleLinkInput').value = savedLink;
                 googleLink = savedLink;
             }
             
-            updateCharCounter();
-            updatePreview();
+            loadTemplate('default');
         }
 
         function showStatus(message, type) {
             const status = document.getElementById('status');
-            status.textContent = message;
+            status.innerHTML = `<span>${message}</span>`;
             status.className = `status ${type}`;
-            status.style.display = 'block';
+            status.style.display = 'flex';
             
             setTimeout(() => {
                 status.style.display = 'none';
-            }, 3000);
+            }, 4000);
         }
 
         async function sendSMS(phone) {
             try {
-                const messageToSend = customMessage.replace('{GOOGLE_LINK}', googleLink);
+                const messageToSend = templates[currentTemplate].replace('{GOOGLE_LINK}', googleLink);
                 
                 const response = await fetch('/api/send-sms', {
                     method: 'POST',
@@ -387,15 +685,15 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    showStatus(`✅ Sent to ${phone}`, 'success');
+                    showStatus(`✅ Message successfully sent to ${phone}`, 'success');
                     todayCount++;
                     document.getElementById('todayCount').textContent = todayCount;
                     localStorage.setItem('sms_count', todayCount);
                 } else {
-                    showStatus(`❌ Failed to send to ${phone}: ${data.error}`, 'error');
+                    showStatus(`❌ Failed to send message to ${phone}: ${data.error}`, 'error');
                 }
             } catch (error) {
-                showStatus(`❌ Error sending to ${phone}`, 'error');
+                showStatus(`❌ Network error sending to ${phone}`, 'error');
             }
         }
 
@@ -403,16 +701,16 @@
             const phone = document.getElementById('singlePhone').value.trim();
             
             if (!phone) {
-                showStatus('Please enter a phone number', 'error');
+                showStatus('⚠️ Please enter a valid phone number', 'error');
                 return;
             }
 
-            if (!customMessage || !googleLink) {
-                showStatus('Please save your message and Google link first', 'error');
+            if (!googleLink) {
+                showStatus('⚠️ Please configure your Google review link first', 'error');
                 return;
             }
 
-            showStatus(`Sending to ${phone}...`, 'sending');
+            showStatus(`🚀 Sending message to ${phone}...`, 'sending');
             await sendSMS(phone);
             document.getElementById('singlePhone').value = '';
         }
@@ -424,16 +722,16 @@
                 .filter(p => p.length > 0);
 
             if (phones.length === 0) {
-                showStatus('Please enter at least one phone number', 'error');
+                showStatus('⚠️ Please enter at least one phone number', 'error');
                 return;
             }
 
-            if (!customMessage || !googleLink) {
-                showStatus('Please save your message and Google link first', 'error');
+            if (!googleLink) {
+                showStatus('⚠️ Please configure your Google review link first', 'error');
                 return;
             }
 
-            showStatus(`Sending to ${phones.length} numbers...`, 'sending');
+            showStatus(`🚀 Sending messages to ${phones.length} recipients...`, 'sending');
 
             for (const phone of phones) {
                 await sendSMS(phone);
@@ -442,16 +740,17 @@
             }
 
             document.getElementById('bulkPhones').value = '';
-            showStatus(`Finished sending to ${phones.length} numbers`, 'success');
+            showStatus(`✅ Bulk messaging completed! Sent to ${phones.length} recipients`, 'success');
         }
 
         // Event listeners
         document.getElementById('messageEditor').addEventListener('input', function() {
             updateCharCounter();
-            updatePreview();
         });
 
-        document.getElementById('googleLinkInput').addEventListener('input', updatePreview);
+        document.getElementById('googleLinkInput').addEventListener('input', function() {
+            updatePreview();
+        });
 
         // Initialize
         loadSavedData();
