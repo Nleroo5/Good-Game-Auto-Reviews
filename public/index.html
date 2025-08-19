@@ -18,7 +18,7 @@
         }
 
         .container {
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
             background: white;
             border-radius: 10px;
@@ -46,7 +46,7 @@
             color: #555;
         }
 
-        input[type="tel"] {
+        input[type="tel"], input[type="url"] {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
@@ -55,9 +55,51 @@
             margin-bottom: 15px;
         }
 
-        input:focus {
+        input:focus, textarea:focus {
             outline: none;
             border-color: #007bff;
+        }
+
+        .message-editor {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-family: Arial, sans-serif;
+            font-size: 1rem;
+            line-height: 1.4;
+            resize: vertical;
+            margin-bottom: 15px;
+        }
+
+        .save-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .save-btn:hover {
+            background: #0056b3;
+        }
+
+        .reset-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .reset-btn:hover {
+            background: #545b62;
         }
 
         .send-btn {
@@ -89,6 +131,7 @@
             font-size: 0.9rem;
             line-height: 1.4;
             margin-bottom: 15px;
+            white-space: pre-wrap;
         }
 
         .status {
@@ -141,10 +184,46 @@
             margin-bottom: 20px;
         }
 
+        .char-counter {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .char-counter.warning {
+            color: #dc3545;
+        }
+
+        .template-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .template-btn {
+            background: #e9ecef;
+            color: #333;
+            border: 1px solid #ced4da;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .template-btn:hover {
+            background: #dee2e6;
+        }
+
         @media (max-width: 600px) {
             .container {
                 margin: 10px;
                 padding: 20px;
+            }
+
+            .template-buttons {
+                flex-direction: column;
             }
         }
     </style>
@@ -153,10 +232,31 @@
     <div class="container">
         <h1>📱 SMS Review Requests</h1>
 
+        <!-- Message Customization -->
+        <div class="section">
+            <h2>Customize Your Message</h2>
+            
+            <div class="template-buttons">
+                <button class="template-btn" onclick="loadTemplate('default')">Default</button>
+                <button class="template-btn" onclick="loadTemplate('friendly')">Friendly</button>
+                <button class="template-btn" onclick="loadTemplate('professional')">Professional</button>
+                <button class="template-btn" onclick="loadTemplate('short')">Short</button>
+            </div>
+
+            <textarea class="message-editor" id="messageEditor" placeholder="Enter your custom message here. Use {GOOGLE_LINK} where you want the review link to appear."></textarea>
+            
+            <div class="char-counter" id="charCounter">0 characters (SMS limit: 160)</div>
+
+            <input type="url" id="googleLinkInput" placeholder="Your Google Review Link" />
+
+            <button class="save-btn" onclick="saveMessage()">Save Message</button>
+            <button class="reset-btn" onclick="resetToDefault()">Reset to Default</button>
+        </div>
+
         <!-- Message Preview -->
         <div class="section">
-            <h2>Message That Gets Sent</h2>
-            <div class="message-box" id="messagePreview">Loading message...</div>
+            <h2>Message Preview</h2>
+            <div class="message-box" id="messagePreview">Hi! Thanks for choosing Good Game Baseball! If you had a great experience with us today, we'd love if you could leave us a quick Google review. It really helps other families find us! 🙏</div>
         </div>
 
         <!-- Status -->
@@ -187,22 +287,76 @@
 
     <script>
         let todayCount = parseInt(localStorage.getItem('sms_count') || '0');
+        let customMessage = '';
+        let googleLink = '';
+
+        // Message templates
+        const templates = {
+            default: "Hi! Thanks for choosing Good Game Baseball! If you had a great experience with us today, we'd love if you could leave us a quick Google review. It really helps other families find us! 🙏 {GOOGLE_LINK}",
+            friendly: "Hey there! Hope you loved your session at Good Game Baseball today! 😊 If you're happy with our coaching, would you mind leaving us a quick Google review? It would mean the world to us! {GOOGLE_LINK}",
+            professional: "Thank you for choosing Good Game Baseball. If you were satisfied with our training services today, we would greatly appreciate a Google review. {GOOGLE_LINK}",
+            short: "Thanks for training with Good Game Baseball! Quick Google review? {GOOGLE_LINK} 🙏"
+        };
+
         document.getElementById('todayCount').textContent = todayCount;
 
-        // Load message preview
-        async function loadMessage() {
-            try {
-                const response = await fetch('/api/send-sms', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'preview' })
-                });
-                const data = await response.json();
-                document.getElementById('messagePreview').textContent = data.message;
-            } catch (error) {
-                document.getElementById('messagePreview').textContent = 
-                    'Hi! Thanks for choosing Good Game Baseball! If you had a great experience with us today, we\'d love if you could leave us a quick Google review. It really helps other families find us! 🙏';
+        function loadTemplate(templateName) {
+            const template = templates[templateName];
+            document.getElementById('messageEditor').value = template;
+            updateCharCounter();
+            updatePreview();
+        }
+
+        function updateCharCounter() {
+            const editor = document.getElementById('messageEditor');
+            const counter = document.getElementById('charCounter');
+            const length = editor.value.length;
+            
+            counter.textContent = `${length} characters (SMS limit: 160)`;
+            counter.classList.toggle('warning', length > 160);
+        }
+
+        function updatePreview() {
+            const message = document.getElementById('messageEditor').value;
+            const link = document.getElementById('googleLinkInput').value || '[Your Google Review Link]';
+            const preview = message.replace('{GOOGLE_LINK}', link);
+            document.getElementById('messagePreview').textContent = preview;
+        }
+
+        function saveMessage() {
+            customMessage = document.getElementById('messageEditor').value;
+            googleLink = document.getElementById('googleLinkInput').value;
+            
+            localStorage.setItem('custom_message', customMessage);
+            localStorage.setItem('google_link', googleLink);
+            
+            updatePreview();
+            showStatus('✅ Message saved successfully!', 'success');
+        }
+
+        function resetToDefault() {
+            loadTemplate('default');
+            saveMessage();
+        }
+
+        function loadSavedData() {
+            const savedMessage = localStorage.getItem('custom_message');
+            const savedLink = localStorage.getItem('google_link');
+            
+            if (savedMessage) {
+                document.getElementById('messageEditor').value = savedMessage;
+                customMessage = savedMessage;
+            } else {
+                loadTemplate('default');
             }
+            
+            if (savedLink) {
+                document.getElementById('googleLinkInput').value = savedLink;
+                googleLink = savedLink;
+            }
+            
+            updateCharCounter();
+            updatePreview();
         }
 
         function showStatus(message, type) {
@@ -218,11 +372,14 @@
 
         async function sendSMS(phone) {
             try {
+                const messageToSend = customMessage.replace('{GOOGLE_LINK}', googleLink);
+                
                 const response = await fetch('/api/send-sms', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         phone: phone,
+                        message: messageToSend,
                         action: 'send'
                     })
                 });
@@ -250,6 +407,11 @@
                 return;
             }
 
+            if (!customMessage || !googleLink) {
+                showStatus('Please save your message and Google link first', 'error');
+                return;
+            }
+
             showStatus(`Sending to ${phone}...`, 'sending');
             await sendSMS(phone);
             document.getElementById('singlePhone').value = '';
@@ -266,6 +428,11 @@
                 return;
             }
 
+            if (!customMessage || !googleLink) {
+                showStatus('Please save your message and Google link first', 'error');
+                return;
+            }
+
             showStatus(`Sending to ${phones.length} numbers...`, 'sending');
 
             for (const phone of phones) {
@@ -278,8 +445,16 @@
             showStatus(`Finished sending to ${phones.length} numbers`, 'success');
         }
 
-        // Load message on page load
-        loadMessage();
+        // Event listeners
+        document.getElementById('messageEditor').addEventListener('input', function() {
+            updateCharCounter();
+            updatePreview();
+        });
+
+        document.getElementById('googleLinkInput').addEventListener('input', updatePreview);
+
+        // Initialize
+        loadSavedData();
     </script>
 </body>
 </html>
