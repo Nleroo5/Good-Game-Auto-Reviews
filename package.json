@@ -1,1 +1,16 @@
-
+{
+  "name": "goodgame-sms",
+  "version": "1.0.0",
+  "description": "SMS review request system for Good Game Baseball",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "twilio": "^4.19.0"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
