@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good Game - SMS Review System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        input[type="tel"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .send-btn {
+            width: 100%;
+            padding: 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .send-btn:hover {
+            background: #218838;
+        }
+
+        .send-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .message-box {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .status {
+            text-align: center;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.sending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .bulk-area {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-family: monospace;
+            resize: vertical;
+            margin-bottom: 15px;
+        }
+
+        .bulk-area:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .counter {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #28a745;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 SMS Review Requests</h1>
+
+        <!-- Message Preview -->
+        <div class="section">
+            <h2>Message That Gets Sent</h2>
+            <div class="message-box" id="messagePreview">Loading message...</div>
+        </div>
+
+        <!-- Status -->
+        <div class="status" id="status" style="display: none;"></div>
+
+        <!-- Single Send -->
+        <div class="section">
+            <h2>Send to One Number</h2>
+            <input type="tel" id="singlePhone" placeholder="Phone number (+1234567890)" />
+            <button class="send-btn" onclick="sendSingle()">Send Text</button>
+        </div>
+
+        <!-- Bulk Send -->
+        <div class="section">
+            <h2>Send to Multiple Numbers</h2>
+            <textarea class="bulk-area" id="bulkPhones" placeholder="Enter phone numbers, one per line:
++1234567890
++1987654321
++1555123456"></textarea>
+            <button class="send-btn" onclick="sendBulk()">Send to All</button>
+        </div>
+
+        <!-- Counter -->
+        <div class="counter">
+            Texts Sent Today: <span id="todayCount">0</span>
+        </div>
+    </div>
+
+    <script>
+        let todayCount = parseInt(localStorage.getItem('sms_count') || '0');
+        document.getElementById('todayCount').textContent = todayCount;
+
+        // Load message preview
+        async function loadMessage() {
+            try {
+                const response = await fetch('/api/send-sms', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'preview' })
+                });
+                const data = await response.json();
+                document.getElementById('messagePreview').textContent = data.message;
+            } catch (error) {
+                document.getElementById('messagePreview').textContent = 
+                    'Hi! Thanks for choosing Good Game Baseball! If you had a great experience with us today, we\'d love if you could leave us a quick Google review. It really helps other families find us! 🙏';
+            }
+        }
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+
+        async function sendSMS(phone) {
+            try {
+                const response = await fetch('/api/send-sms', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        phone: phone,
+                        action: 'send'
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    showStatus(`✅ Sent to ${phone}`, 'success');
+                    todayCount++;
+                    document.getElementById('todayCount').textContent = todayCount;
+                    localStorage.setItem('sms_count', todayCount);
+                } else {
+                    showStatus(`❌ Failed to send to ${phone}: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`❌ Error sending to ${phone}`, 'error');
+            }
+        }
+
+        async function sendSingle() {
+            const phone = document.getElementById('singlePhone').value.trim();
+            
+            if (!phone) {
+                showStatus('Please enter a phone number', 'error');
+                return;
+            }
+
+            showStatus(`Sending to ${phone}...`, 'sending');
+            await sendSMS(phone);
+            document.getElementById('singlePhone').value = '';
+        }
+
+        async function sendBulk() {
+            const phones = document.getElementById('bulkPhones').value
+                .split('\n')
+                .map(p => p.trim())
+                .filter(p => p.length > 0);
+
+            if (phones.length === 0) {
+                showStatus('Please enter at least one phone number', 'error');
+                return;
+            }
+
+            showStatus(`Sending to ${phones.length} numbers...`, 'sending');
+
+            for (const phone of phones) {
+                await sendSMS(phone);
+                // Small delay between sends
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+
+            document.getElementById('bulkPhones').value = '';
+            showStatus(`Finished sending to ${phones.length} numbers`, 'success');
+        }
+
+        // Load message on page load
+        loadMessage();
+    </script>
+</body>
+</html>
